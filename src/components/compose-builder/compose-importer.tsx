@@ -167,7 +167,11 @@ function parseComposeConfig(config: Record<string, unknown>): { nodes: Node[], e
         data: {
           name: serviceName,
           image: serviceConfig.image || 'latest',
-          environment: parseEnvironment(serviceConfig.environment || {})
+          environment: parseEnvironment(serviceConfig.environment ? (
+            Array.isArray(serviceConfig.environment) 
+              ? serviceConfig.environment as string[]
+              : serviceConfig.environment as Record<string, string>
+          ) : undefined)
         } as ServiceNodeData,
         style: {
           width: 200,
@@ -324,7 +328,9 @@ function parseComposeConfig(config: Record<string, unknown>): { nodes: Node[], e
               position: networkPosition,
               data: {
                 name: networkName,
-                driver: config.networks?.[networkName]?.driver
+                driver: config.networks && typeof config.networks === 'object' 
+                  ? (config.networks as Record<string, Record<string, unknown>>)[networkName]?.driver as string | undefined 
+                  : undefined
               } as NetworkNodeData,
               style: {
                 width: 150,

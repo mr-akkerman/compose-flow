@@ -41,7 +41,7 @@ export function NodeEditor({ activeNode, onClose, onSave, onDelete }: NodeEditor
   };
 
   const renderServiceEditor = () => {
-    const data = formData as ServiceNodeData;
+    const data = formData as unknown as ServiceNodeData;
     return (
       <div className="space-y-6">
         <div>
@@ -114,7 +114,7 @@ export function NodeEditor({ activeNode, onClose, onSave, onDelete }: NodeEditor
   };
 
   const renderPortEditor = () => {
-    const data = formData as PortNodeData;
+    const data = formData as unknown as PortNodeData;
     return (
       <div className="space-y-6">
         <div>
@@ -152,7 +152,7 @@ export function NodeEditor({ activeNode, onClose, onSave, onDelete }: NodeEditor
   };
 
   const renderVolumeEditor = () => {
-    const data = formData as VolumeNodeData;
+    const data = formData as unknown as VolumeNodeData;
     return (
       <div className="space-y-6">
         <div>
@@ -189,7 +189,7 @@ export function NodeEditor({ activeNode, onClose, onSave, onDelete }: NodeEditor
   };
 
   const renderNetworkEditor = () => {
-    const data = formData as NetworkNodeData;
+    const data = formData as unknown as NetworkNodeData;
     return (
       <div className="space-y-6">
         <div>
