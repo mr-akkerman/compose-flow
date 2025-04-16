@@ -20,16 +20,16 @@ interface ComposeService {
 interface ComposeConfig {
   version: string;
   services: Record<string, ComposeService>;
-  volumes?: Record<string, any>;
-  networks?: Record<string, any>;
+  volumes?: Record<string, Record<string, unknown>>;
+  networks?: Record<string, Record<string, unknown>>;
 }
 
 export function ComposeGenerator({ nodes, edges, onClose }: ComposeGeneratorProps) {
   // Функция для получения сервисов и их соединений
   const getServiceConnections = () => {
     const services: Record<string, ComposeService> = {};
-    const volumeConfigs: Record<string, any> = {};
-    const networkConfigs: Record<string, any> = {};
+    const volumeConfigs: Record<string, Record<string, unknown>> = {};
+    const networkConfigs: Record<string, Record<string, unknown>> = {};
     
     // Получаем все сервисы
     nodes.filter(node => node.type === 'service').forEach(node => {

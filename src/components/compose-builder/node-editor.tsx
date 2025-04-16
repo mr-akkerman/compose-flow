@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Node } from 'reactflow';
 import { ActiveNode, ServiceNodeData, PortNodeData, VolumeNodeData, NetworkNodeData } from './types';
 
 interface NodeEditorProps {
   activeNode: ActiveNode | null;
   onClose: () => void;
-  onSave: (id: string, data: any) => void;
+  onSave: (id: string, data: Record<string, unknown>) => void;
   onDelete?: (id: string) => void;
 }
 
 export function NodeEditor({ activeNode, onClose, onSave, onDelete }: NodeEditorProps) {
-  const [formData, setFormData] = useState<any>(null);
+  const [formData, setFormData] = useState<Record<string, unknown> | null>(null);
 
   // Инициализируем данные формы при изменении активного узла
   useEffect(() => {
@@ -25,12 +24,12 @@ export function NodeEditor({ activeNode, onClose, onSave, onDelete }: NodeEditor
     return null;
   }
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: unknown) => {
     setFormData({ ...formData, [key]: value });
   };
 
   const handleEnvironmentChange = (key: string, value: string) => {
-    const newEnv = { ...formData.environment, [key]: value };
+    const newEnv = { ...(formData.environment as Record<string, string> || {}), [key]: value };
     setFormData({ ...formData, environment: newEnv });
   };
 

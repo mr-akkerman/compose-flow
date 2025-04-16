@@ -100,7 +100,7 @@ export function ComposeBuilder() {
 
   // Обработчик для сохранения изменений узла
   const handleSaveNodeChanges = useCallback(
-    (id: string, data: any) => {
+    (id: string, data: Record<string, unknown>) => {
       setNodes((nds) =>
         nds.map((node) => {
           if (node.id === id) {

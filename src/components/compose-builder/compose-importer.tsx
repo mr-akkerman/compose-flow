@@ -59,7 +59,6 @@ export function ComposeImporter({ onClose, onImport }: ComposeImporterProps) {
     e.preventDefault();
     
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
       if (fileInputRef.current) {
         fileInputRef.current.files = e.dataTransfer.files;
         handleFileUpload({ target: { files: e.dataTransfer.files } } as React.ChangeEvent<HTMLInputElement>);
@@ -142,17 +141,17 @@ export function ComposeImporter({ onClose, onImport }: ComposeImporterProps) {
 }
 
 // Функция для парсинга Docker Compose файла
-function parseComposeConfig(config: any): { nodes: Node[], edges: Edge[] } {
+function parseComposeConfig(config: Record<string, unknown>): { nodes: Node[], edges: Edge[] } {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
   
   // Базовая позиция для сервисов
-  let serviceX = 150;
-  let serviceY = 100;
+  const serviceX = 150;
+  const serviceY = 100;
   
   // Создаем узлы для сервисов
   if (config.services) {
-    Object.entries(config.services).forEach(([serviceName, serviceConfig]: [string, any], index) => {
+    Object.entries(config.services as Record<string, Record<string, unknown>>).forEach(([serviceName, serviceConfig], index) => {
       // Создаем смещение для каждого нового сервиса
       const servicePosition: XYPosition = {
         x: serviceX + index * 300,
@@ -376,20 +375,22 @@ function parseComposeConfig(config: any): { nodes: Node[], edges: Edge[] } {
 }
 
 // Парсим переменные окружения
-function parseEnvironment(env: any): Record<string, string> {
+function parseEnvironment(env: Record<string, string> | string[] | undefined): Record<string, string> {
   if (Array.isArray(env)) {
     // Если переменные заданы в виде массива строк "KEY=VALUE"
-    return env.reduce((acc, entry) => {
-      const [key, value] = entry.split('=', 2);
-      if (key) acc[key] = value || '';
-      return acc;
-    }, {} as Record<string, string>);
-  } else if (typeof env === 'object') {
-    // Если переменные заданы в виде объекта {KEY: VALUE}
-    return Object.entries(env).reduce((acc, [key, value]) => {
-      acc[key] = String(value);
-      return acc;
-    }, {} as Record<string, string>);
+    const result: Record<string, string> = {};
+    env.forEach(item => {
+      const parts = item.split('=');
+      if (parts.length >= 2) {
+        const key = parts[0];
+        const value = parts.slice(1).join('=');
+        result[key] = value;
+      }
+    });
+    return result;
+  } else if (env && typeof env === 'object') {
+    // Если переменные заданы в виде объекта { KEY: "VALUE" }
+    return env as Record<string, string>;
   }
   
   return {};
